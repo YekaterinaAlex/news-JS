@@ -23,6 +23,10 @@ const baseConfig = {
                 },
                 exclude: /node_modules/,
             },
+            {
+                test: /\.svg$/i,
+                type: 'asset/resource',
+            },
         ],
     },
     resolve: {
