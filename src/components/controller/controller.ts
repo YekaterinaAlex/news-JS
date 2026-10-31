@@ -1,9 +1,9 @@
-import { NewsResponse, SourcesResponse } from '../../types/news';
+import type { NewsResponse, SourcesResponse } from '../../types/news';
 import AppLoader from './appLoader';
 
 class AppController extends AppLoader {
     getSources(callback: (data: SourcesResponse) => void): void {
-        super.getResp(
+        super.getResp<SourcesResponse>(
             {
                 endpoint: 'sources',
             },
@@ -11,37 +11,42 @@ class AppController extends AppLoader {
         );
     }
 
-    getNews(e: MouseEvent, callback: (data: NewsResponse) => void) {
+    getNews(e: MouseEvent, callback: (data: NewsResponse) => void): void {
         const newsContainer = e.currentTarget;
+        const target = e.target;
 
         if (!(newsContainer instanceof HTMLElement)) {
             return;
         }
 
-        let target = e.target;
-
-        if (!(target instanceof HTMLElement)) {
+        if (!(target instanceof Element)) {
             return;
         }
 
-        while (target !== newsContainer) {
-            if (target.classList.contains('source__item')) {
-                const sourceId = target.closest<HTMLElement>('.source__item');
-                if (newsContainer.getAttribute('data-source') !== sourceId) {
-                    newsContainer.setAttribute('data-source', sourceId);
-                    super.getResp(
-                        {
-                            endpoint: 'everything',
-                            options: {
-                                sources: sourceId,
-                            },
-                        },
-                        callback
-                    );
-                }
-                return;
-            }
-            target = target.parentNode;
+        const sourceItem = target.closest<HTMLElement>('.source__item');
+
+        if (!sourceItem || !newsContainer.contains(sourceItem)) {
+            return;
+        }
+
+        const sourceId = sourceItem.getAttribute('data-source-id');
+
+        if (!sourceId) {
+            return;
+        }
+
+        if (newsContainer.getAttribute('data-source') !== sourceId) {
+            newsContainer.setAttribute('data-source', sourceId);
+
+            super.getResp<NewsResponse>(
+                {
+                    endpoint: 'everything',
+                    options: {
+                        sources: sourceId,
+                    },
+                },
+                callback
+            );
         }
     }
 }

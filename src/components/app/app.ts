@@ -11,14 +11,15 @@ class App {
     }
 
     start(): void {
-        const sourcesElement = document.querySelector('.sources');
+        const sourcesElement = document.querySelector<HTMLElement>('.sources');
 
         if (sourcesElement) {
             sourcesElement.addEventListener('click', (e) =>
                 this.controller.getNews(e, (data) => this.view.drawNews(data))
             );
-            this.controller.getSources((data) => this.view.drawSources(data));
         }
+
+        this.controller.getSources((data) => this.view.drawSources(data));
     }
 }
 
