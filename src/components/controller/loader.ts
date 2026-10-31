@@ -1,3 +1,4 @@
+import { HttpMethod } from '../../types/http';
 type RequestOptions = Record<string, string>;
 
 interface RequestParams {
@@ -20,7 +21,7 @@ class Loader {
             console.error('No callback for GET response');
         }
     ): void {
-        this.load<T>('GET', endpoint, callback, options);
+        this.load<T>(HttpMethod.GET, endpoint, callback, options);
     }
 
     errorHandler(res: Response): Response {
@@ -44,7 +45,7 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    load<T>(method: string, endpoint: string, callback: (data: T) => void, options: RequestOptions = {}): void {
+    load<T>(method: HttpMethod, endpoint: string, callback: (data: T) => void, options: RequestOptions = {}): void {
         fetch(this.makeUrl(options, endpoint), { method })
             .then((res: Response) => this.errorHandler(res))
             .then((res: Response) => res.json())
