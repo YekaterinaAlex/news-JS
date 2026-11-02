@@ -7,15 +7,15 @@ interface RequestParams {
 }
 
 class Loader {
-    baseLink: string;
-    options: RequestOptions;
+    protected baseLink: string;
+    protected options: RequestOptions;
 
     constructor(baseLink: string, options: RequestOptions) {
         this.baseLink = baseLink;
         this.options = options;
     }
 
-    getResp<T>(
+    public getResp<T>(
         { endpoint, options = {} }: RequestParams,
         callback: (data: T) => void = () => {
             console.error('No callback for GET response');
